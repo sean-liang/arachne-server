@@ -113,7 +113,7 @@ public class Target implements DomainEntity {
             for (final TargetPipe pipe : this.pipes) {
                 try {
                     stream = pipe.proceed(stream, feedback, context);
-                } catch (DropFeedbackException e) {
+                } catch (Throwable e) {
                     log.debug("Drop: {}", feedback.getId());
                     return;
                 }

@@ -47,7 +47,7 @@ public class ScriptTargetPipe extends AbstractTargetPipe implements AutoCloseabl
     @Override
     public synchronized Stream<Object> proceed(final Stream<Object> stream,
                                   final JobFeedback feedback,
-                                  final Map<String, Object> context) throws DropFeedbackException {
+                                  final Map<String, Object> context) throws Throwable {
         if(this.closed) {
             throw new BadRequestException("Pipe closed.");
         }
@@ -61,10 +61,8 @@ public class ScriptTargetPipe extends AbstractTargetPipe implements AutoCloseabl
             return this.script.instance().proceed(stream, feedback, context);
         } catch(PolyglotException ex) {
             final Throwable t = ex.asHostException();
-            if(null != t && t instanceof DropFeedbackException) {
-                throw (DropFeedbackException)t;
-            } else if(null != t && t instanceof RuntimeException){
-                throw (RuntimeException)t;
+            if(null != t) {
+                throw t;
             } else {
                 throw ex;
             }

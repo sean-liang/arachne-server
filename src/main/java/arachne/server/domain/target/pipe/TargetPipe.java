@@ -28,6 +28,6 @@ public interface TargetPipe extends Serializable {
 
     Stream<Object> proceed(Stream<Object> stream,
                            JobFeedback feedback,
-                           Map<String, Object> context) throws DropFeedbackException;
+                           Map<String, Object> context) throws Throwable;
 
 }

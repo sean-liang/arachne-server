@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ScriptTargetPipeTest {
 
     @Test
-    void testUsage() throws DropFeedbackException {
+    void testUsage() throws Throwable {
         val script = new BufferedReader(new InputStreamReader(GraalvmScriptEngineTest.class.getResourceAsStream("/test-scripting-target-pipe.js")))
                 .lines().collect(Collectors.joining("\n"));
 

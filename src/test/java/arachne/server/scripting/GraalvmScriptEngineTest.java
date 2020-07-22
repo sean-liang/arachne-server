@@ -28,7 +28,7 @@ public class GraalvmScriptEngineTest {
             pipe.instance().destroy();
             val stream =  pipe.instance().proceed(Stream.of(1,2,3), null, null);
             assertEquals(Arrays.asList(2,4,6), stream.collect(Collectors.toList()));
-        } catch (DropFeedbackException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             fail();
         }
