@@ -15,19 +15,19 @@ public class JobAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Getter
-    private HttpMethod method;
+    private final HttpMethod method;
 
     @Getter
-    private List<HttpHeader> headers;
+    private final List<HttpHeader> headers;
 
     @Getter
-    private String url;
+    private final String url;
 
     @Getter
-    private String body;
+    private final String body;
 
     @Getter
-    private String fingerprint;
+    private final String fingerprint;
 
     public JobAction(@NonNull final String url) {
         this(HttpMethod.GET, url);
@@ -71,11 +71,8 @@ public class JobAction implements Serializable {
             return false;
         JobAction other = (JobAction) obj;
         if (fingerprint == null) {
-            if (other.fingerprint != null)
-                return false;
-        } else if (!fingerprint.equals(other.fingerprint))
-            return false;
-        return true;
+            return other.fingerprint == null;
+        } else return fingerprint.equals(other.fingerprint);
     }
 
 }

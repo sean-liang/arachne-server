@@ -11,17 +11,15 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 @JsonTypeName("SCRIPT_PIPE")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, of={"content"})
 public class ScriptTargetPipe extends AbstractTargetPipe {
 
     private static final long serialVersionUID = 1L;
 
-    @Getter
-    @Setter
     private String content;
-
 
     @JsonIgnore
     @Transient

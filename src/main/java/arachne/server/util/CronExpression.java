@@ -2,9 +2,7 @@ package arachne.server.util;
 
 /*
  * This file originated from the Quartz scheduler with no change in licensing.
- * Copyright Terracotta, Inc.
  */
-
 import java.text.ParseException;
 import java.util.*;
 

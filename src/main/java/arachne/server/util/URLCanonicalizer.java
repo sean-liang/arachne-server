@@ -1,5 +1,8 @@
 package arachne.server.util;
 
+/*
+ * This file originated from the crawler4j with no change in licensing.
+ */
 import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.charset.Charset;

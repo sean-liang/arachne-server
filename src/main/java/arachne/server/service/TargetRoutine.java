@@ -29,6 +29,9 @@ public class TargetRoutine {
     }
 
     public void handleTarget(final Target target, final long ts) {
+        if(null == target) {
+            return;
+        }
         synchronized (target) {
             Optional.ofNullable(target.getProvider()).ifPresent(TargetActionProvider::persistOnDirty);
             if (target.getStatus() == TargetStatus.SCHEDULED && target.getNextRunAt() > 0 && ts >= target.getNextRunAt()) {

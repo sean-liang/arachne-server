@@ -26,7 +26,7 @@ public class WeightedLoadBalanceJobScheduleStrategy implements JobScheduleStrate
     public List<Job> takeJobs(final Worker worker, final List<Target> targets) {
         final int batchSize = worker.getBatchSize() > 0 ? worker.getBatchSize() : 1;
         final List<Job> jobs = new ArrayList<>();
-        if (null != worker && null != targets && !targets.isEmpty()) {
+        if (null != targets && !targets.isEmpty()) {
             take(batchSize, worker, jobs, new ArrayList<>(targets));
         }
         return jobs;
@@ -40,16 +40,18 @@ public class WeightedLoadBalanceJobScheduleStrategy implements JobScheduleStrate
         for (final Iterator<Target> it = targets.iterator(); it.hasNext(); ) {
             final Target target = it.next();
             int amount = (total * target.getWeight() - 1) / totalWeight + 1;
-            amount = amount > remaining ? remaining : amount;
+            amount = Math.min(amount, remaining);
             final List<Job> targetJobs = this.allocator.allocate(worker, target, amount);
-            if (null != targetJobs && !targetJobs.isEmpty()) {
-                jobs.addAll(targetJobs);
-                remaining = remaining - targetJobs.size();
-            }
-            if (targetJobs.size() < amount) {
-                target.stop();
-                it.remove();
-                this.jobStatsService.broadcast();
+            if(null != targetJobs) {
+                if (!targetJobs.isEmpty()) {
+                    jobs.addAll(targetJobs);
+                    remaining = remaining - targetJobs.size();
+                }
+                if (targetJobs.size() < amount) {
+                    target.stop();
+                    it.remove();
+                    this.jobStatsService.broadcast();
+                }
             }
             if (total <= jobs.size()) {
                 break;

@@ -209,7 +209,7 @@ public class Target implements DomainEntity {
     }
 
     public boolean checkStatus(boolean throwException, TargetStatus... required) {
-        final boolean result = Arrays.stream(required).anyMatch(this.getStatus()::equals);
+        final boolean result = Arrays.asList(required).contains(this.getStatus());
         if (!result && throwException) {
             throw new BadRequestException("ILLEGAL_STATUS: " + this.status.name());
         }

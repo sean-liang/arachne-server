@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class WorkerUserDetailsService implements UserDetailsService {
 
@@ -23,7 +24,7 @@ public class WorkerUserDetailsService implements UserDetailsService {
         final Worker worker = this.service.getById(clientId)
                 .orElseThrow(() -> new UsernameNotFoundException("WORKER_NOT_FOUND"));
         return new org.springframework.security.core.userdetails.User(worker.getId(), worker.getToken(),
-                Arrays.asList(new SimpleGrantedAuthority("ROLE_WORKER")));
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_WORKER")));
     }
 
 }

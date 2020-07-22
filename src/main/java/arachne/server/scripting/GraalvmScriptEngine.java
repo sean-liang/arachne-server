@@ -4,12 +4,11 @@ import lombok.NonNull;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.Value;
-import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
-@Service
 public class GraalvmScriptEngine implements ScriptEngine {
 
     private static final String LANGUAGE_ID = "js";
@@ -30,34 +29,30 @@ public class GraalvmScriptEngine implements ScriptEngine {
         final StringBuilder execution = new StringBuilder(this.createTypeReference(interfaceOrParent));
         if(null != executeBefore) {
             Arrays.stream(executeBefore)
-                    .filter(line -> null != line)
+                    .filter(Objects::nonNull)
                     .map(String::trim)
                     .filter(line -> line.length() > 0)
                     .map(line -> !line.endsWith(";") ? line + ";\n": line +"\n")
-                    .forEach(line -> execution.append(line));
+                    .forEach(execution::append);
         }
         execution.append(this.decorateScript(script));
         final Value result = context.eval(LANGUAGE_ID, execution.toString());
-        return new GraalvmScript(context, result.as(interfaceOrParent));
+        return new GraalvmScript<T>(context, result.as(interfaceOrParent));
     }
 
     private String createTypeReference(final Class<?> interfaceOrParent) {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("var ")
-                .append(REF_NAME)
-                .append(" = Java.extend(Java.type('")
-                .append(interfaceOrParent.getCanonicalName())
-                .append("'));\n");
-        return builder.toString();
+        return "var " +
+                REF_NAME +
+                " = Java.extend(Java.type('" +
+                interfaceOrParent.getCanonicalName() +
+                "'));\n";
     }
 
     private String decorateScript(final String script) {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("new ")
-                .append(REF_NAME)
-                .append("(")
-                .append(script)
-                .append(");\n");
-        return builder.toString();
+        return "new " +
+                REF_NAME +
+                "(" +
+                script +
+                ");\n";
     }
 }

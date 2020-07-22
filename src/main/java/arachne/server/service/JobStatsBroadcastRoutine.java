@@ -23,7 +23,7 @@ public class JobStatsBroadcastRoutine {
     }
 
     public void broadcast(final Supplier<JobStatsUpdate> supplier) {
-        this.adminDashboard.broadcast(() -> supplier.get());
+        this.adminDashboard.broadcast(supplier::get);
     }
 
 }
