@@ -1,5 +1,6 @@
 package arachne.server.scripting;
 
+import arachne.server.domain.target.pipe.DropFeedbackException;
 import lombok.NonNull;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;

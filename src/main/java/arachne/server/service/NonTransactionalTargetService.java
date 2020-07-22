@@ -18,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -86,8 +87,7 @@ public class NonTransactionalTargetService implements TargetService {
     public synchronized Target updateTarget(final String id, final TargetForm form) {
         final Target target = this.getById(id).orElseThrow(ResourceNotFoundException::new);
         target.checkStatus(true, TargetStatus.DONE, TargetStatus.DISABLED, TargetStatus.FAIL);
-
-        if (!ObjectUtils.nullSafeEquals(target.getProvider(), form.getProvider())) {
+        if (!Objects.equals(target.getProvider(), form.getProvider())) {
             if (null != target.getProvider()) {
                 target.getProvider().destroy();
             }
@@ -97,7 +97,7 @@ public class NonTransactionalTargetService implements TargetService {
             }
         }
 
-        if (!ObjectUtils.nullSafeEquals(target.getStore(), form.getStore())) {
+        if (!Objects.equals(target.getStore(), form.getStore())) {
             if (null != target.getStore()) {
                 target.getStore().destroy();
             }

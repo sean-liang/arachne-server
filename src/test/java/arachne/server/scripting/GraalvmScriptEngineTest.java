@@ -3,6 +3,7 @@ package arachne.server.scripting;
 import arachne.server.domain.target.pipe.AbstractTargetPipe;
 import arachne.server.domain.target.pipe.DropFeedbackException;
 import lombok.val;
+import org.graalvm.polyglot.PolyglotException;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -25,14 +26,14 @@ public class GraalvmScriptEngineTest {
         try {
             pipe.instance().initialize();
             pipe.instance().destroy();
-            Stream<Object> stream =  pipe.instance().proceed(Stream.of(1,2,3), null, null);
+            val stream =  pipe.instance().proceed(Stream.of(1,2,3), null, null);
             assertEquals(Arrays.asList(2,4,6), stream.collect(Collectors.toList()));
         } catch (DropFeedbackException e) {
             e.printStackTrace();
             fail();
-        } finally {
-            pipe.close();
         }
+
+        pipe.close();
     }
 
 }

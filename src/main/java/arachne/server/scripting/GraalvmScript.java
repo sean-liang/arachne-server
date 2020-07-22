@@ -20,6 +20,6 @@ public class GraalvmScript<T> implements Script<T> {
 
     @Override
     public void close() {
-        this.context.close();
+        this.context.close(true);
     }
 }
