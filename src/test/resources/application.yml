@@ -1,0 +1,14 @@
+arachne:
+  node:
+    id: 100
+  job-tracker:
+    expire: 180
+    ttl: 600
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG

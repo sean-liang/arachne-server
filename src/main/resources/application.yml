@@ -1,0 +1,30 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: arachne-server
+  redis:
+    host: redis-dev
+    port: 6379
+  data:
+    mongodb:
+      authentication-database: admin
+      username: root
+      password: root
+      database: arachne
+      port: 27017
+      host: mongo-dev
+security:
+  sessions: NEVER
+arachne:
+  node:
+    id: 100
+  job-tracker:
+    expire: 180
+    ttl: 600
+logging:
+  level:
+    root: INFO
+    org.springframework.security: TRACE
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    arachne: DEBUG

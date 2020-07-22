@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package arachne.server.controller.worker.message;
+
+message JobMessage {
+    message JobAction {
+        enum HttpMethod {
+            GET = 0;
+            POST = 1;
+            PUT = 2;
+            DELETE = 3;
+        }
+        message HttpHeader {
+            string key = 1;
+            string value = 2;
+        }
+        HttpMethod method = 1;
+        repeated HttpHeader headers = 2;
+        string url = 3;
+        string body = 4;
+    }
+    int64 id = 1;
+    int32 retries = 2;
+    JobAction action = 3;
+}
+
+message JobMessageList {
+    repeated JobMessage jobs = 1;
+}
+
+message JobFeedbackMessage {
+    enum ContentType {
+        TEXT = 0;
+        JSON = 1;
+        BINARY = 2;
+    }
+    int64 id = 1;
+    int32 status = 2;
+    string meta = 3;
+    ContentType contentType = 4;
+    bytes content = 5;
+}
+
+message JobFeedbackMessageList {
+    repeated JobFeedbackMessage feedback = 3;
+}
+
+message JobRequest {
+    int32 size = 1;
+}
