@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,8 +81,14 @@ public class NonTransactionalTargetService implements TargetService {
         form.applyTo(target);
         target.setStatus(TargetStatus.DISABLED);
         final Target saved = this.addToCache(this.targetRepo.insert(target));
-        saved.initialize();
-        this.jobStatsService.broadcast();
+        try {
+            Executors.newSingleThreadExecutor().submit(() -> {
+                saved.initialize();
+                this.jobStatsService.broadcast();
+            }).get();
+        } catch(Throwable t) {
+            throw new RuntimeException(t);
+        }
         return saved;
     }
 
@@ -87,36 +96,43 @@ public class NonTransactionalTargetService implements TargetService {
     public synchronized Target updateTarget(final String id, final TargetForm form) {
         final Target target = this.getById(id).orElseThrow(ResourceNotFoundException::new);
         target.checkStatus(true, TargetStatus.DONE, TargetStatus.DISABLED, TargetStatus.FAIL);
-        if (!Objects.equals(target.getProvider(), form.getProvider())) {
-            if (null != target.getProvider()) {
-                target.getProvider().destroy();
-            }
-            if (null != form.getProvider()) {
-                form.getProvider().setTarget(target);
-                form.getProvider().initialize();
-            }
-        }
 
-        if (!Objects.equals(target.getStore(), form.getStore())) {
-            if (null != target.getStore()) {
-                target.getStore().destroy();
-            }
-            if (null != form.getStore()) {
-                form.getStore().setTarget(target);
-                form.getStore().initialize();
-            }
+        try {
+            Executors.newSingleThreadExecutor().submit(() -> {
+                if (!Objects.equals(target.getProvider(), form.getProvider())) {
+                    if (null != target.getProvider()) {
+                        target.getProvider().destroy();
+                    }
+                    if (null != form.getProvider()) {
+                        form.getProvider().setTarget(target);
+                        form.getProvider().initialize();
+                    }
+                }
+
+                if (!Objects.equals(target.getStore(), form.getStore())) {
+                    if (null != target.getStore()) {
+                        target.getStore().destroy();
+                    }
+                    if (null != form.getStore()) {
+                        form.getStore().setTarget(target);
+                        form.getStore().initialize();
+                    }
+                }
+                if (null != form.getPipes()) {
+                    form.getPipes().forEach(pipe -> pipe.setTarget(target));
+                }
+                ListDiffer.diff(
+                        target.getPipes(),
+                        form.getPipes(),
+                        TargetPipe::destroy,
+                        added -> {
+                            added.setTarget(target);
+                            added.initialize();
+                        });
+            }).get();
+        } catch(Throwable t) {
+            throw new RuntimeException(t);
         }
-        if (null != form.getPipes()) {
-            form.getPipes().forEach(pipe -> pipe.setTarget(target));
-        }
-        ListDiffer.diff(
-                target.getPipes(),
-                form.getPipes(),
-                TargetPipe::destroy,
-                added -> {
-                    added.setTarget(target);
-                    added.initialize();
-                });
 
         form.applyTo(target);
         final Target updated = this.addToCache(this.targetRepo.save(target));
@@ -151,13 +167,19 @@ public class NonTransactionalTargetService implements TargetService {
     }
 
     @Override
-    public synchronized void removeTarget(final String id) {
+    public synchronized void removeTarget(final String id)  {
         final Target target = this.getById(id).orElseThrow(ResourceNotFoundException::new);
         target.checkStatus(true, TargetStatus.SCHEDULED, TargetStatus.DONE, TargetStatus.DISABLED, TargetStatus.FAIL);
         this.targetRepo.deleteById(target.getId());
         final Target removed = this.targets.remove(id);
-        removed.destroy();
-        this.jobStatsService.broadcast();
+        try {
+            Executors.newSingleThreadExecutor().submit(() -> {
+                removed.destroy();
+                this.jobStatsService.broadcast();
+            }).get();
+        } catch(Throwable t) {
+            throw new RuntimeException(t);
+        }
     }
 
     private Target addToCache(final Target target) {

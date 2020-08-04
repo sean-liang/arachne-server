@@ -14,7 +14,8 @@ import java.util.stream.Stream;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AttachUpdateTimestampTargetPipe.class, name = "ATTACH_UPDATE_TIMESTAMP_PIPE")
+        @JsonSubTypes.Type(value = AttachUpdateTimestampTargetPipe.class, name = "ATTACH_UPDATE_TIMESTAMP_PIPE"),
+        @JsonSubTypes.Type(value = ScriptTargetPipe.class, name = "SCRIPT_PIPE")
 })
 public interface TargetPipe extends Serializable {
 

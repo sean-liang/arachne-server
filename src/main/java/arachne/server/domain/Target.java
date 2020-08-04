@@ -2,7 +2,6 @@ package arachne.server.domain;
 
 import arachne.server.domain.feedback.JobFeedback;
 import arachne.server.domain.target.actionprovider.TargetActionProvider;
-import arachne.server.domain.target.pipe.DropFeedbackException;
 import arachne.server.domain.target.pipe.TargetPipe;
 import arachne.server.domain.target.store.TargetStore;
 import arachne.server.exceptions.BadRequestException;
@@ -234,7 +233,7 @@ public class Target implements DomainEntity {
             this.nextRunAt = ts;
         } else if (this.repetition == TargetRepetition.CRON) {
             try {
-                this.nextRunAt = new CronExpression(this.repetitionConfig).getTimeAfter(new Date()).getTime();
+                this.nextRunAt = CronExpression.getTimeAfter(this.repetitionConfig).orElse(0L);
             } catch (Exception ex) {
                 throw new ServerFailureException("ILLEGAL_CRON_PATTERN: " + ex.getMessage());
             }

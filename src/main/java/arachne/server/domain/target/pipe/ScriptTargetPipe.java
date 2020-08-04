@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class ScriptTargetPipe extends AbstractTargetPipe implements AutoCloseable {
 
     private static final long serialVersionUID = 1L;

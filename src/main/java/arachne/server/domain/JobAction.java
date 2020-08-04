@@ -1,7 +1,7 @@
 package arachne.server.domain;
 
-import arachne.server.util.URLCanonicalizer;
 import arachne.server.util.URLFingerprints;
+import edu.uci.ics.crawler4j.url.URLCanonicalizer;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -40,7 +40,7 @@ public class JobAction implements Serializable {
     public JobAction(@NonNull final HttpMethod method, final List<HttpHeader> headers, @NonNull final String url,
                      final String body) {
         try {
-            this.url = URLCanonicalizer.getCanonicalURL(url, false);
+            this.url = URLCanonicalizer.getCanonicalURL(url);
             this.method = method;
             this.headers = headers;
             this.body = body;

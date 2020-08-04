@@ -36,13 +36,13 @@ public class TransactionalTargetService implements TargetService {
         return this.nonTransactionalService.getTargetStream();
     }
 
-//    @Transactional
+    @Transactional
     @Override
     public Target addTarget(final TargetForm form) {
         return this.nonTransactionalService.addTarget(form);
     }
 
-//    @Transactional
+    @Transactional
     @Override
     public Target updateTarget(final String id, final TargetForm form) {
         return this.nonTransactionalService.updateTarget(id, form);
@@ -54,7 +54,7 @@ public class TransactionalTargetService implements TargetService {
         return this.nonTransactionalService.updateStatus(id, status);
     }
 
-//    @Transactional
+    @Transactional
     @Override
     public void removeTarget(final String id) {
         this.nonTransactionalService.removeTarget(id);
