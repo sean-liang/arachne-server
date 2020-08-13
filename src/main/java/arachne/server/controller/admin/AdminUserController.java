@@ -48,7 +48,7 @@ public class AdminUserController {
 
     @PostMapping("/admin/users")
     public void createUser(@RequestBody @Valid final CreateUserForm form) {
-        this.userRepo.save(new User(null, form.getUsername(), this.passwordEncoder.encode(form.getPassword()), 0L));
+        this.userRepo.save(new User(null, form.getUsername(), this.passwordEncoder.encode(form.getPassword())));
     }
 
     @PutMapping("/admin/users/chpwd/{id}")

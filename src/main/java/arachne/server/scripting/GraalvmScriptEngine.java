@@ -1,6 +1,5 @@
 package arachne.server.scripting;
 
-import arachne.server.domain.target.pipe.DropFeedbackException;
 import lombok.NonNull;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
@@ -19,21 +18,21 @@ public class GraalvmScriptEngine implements ScriptEngine {
     private final Engine engine = Engine.create();
 
     @Override
-    public <T> Script<T> createObject(@NonNull  final String script,
-                        @NonNull final Class<T> interfaceOrParent,
-                        final Map<String, Object> variables,
-                        final String... executeBefore) {
+    public <T> Script<T> createObject(@NonNull final String script,
+                                      @NonNull final Class<T> interfaceOrParent,
+                                      final Map<String, Object> variables,
+                                      final String... executeBefore) {
         final Context context = Context.newBuilder(LANGUAGE_ID).engine(this.engine).allowAllAccess(true).build();
-        if(variables!=null) {
-            variables.forEach((k,v)-> context.getBindings(LANGUAGE_ID).putMember(k, v));
+        if (variables != null) {
+            variables.forEach((k, v) -> context.getBindings(LANGUAGE_ID).putMember(k, v));
         }
         final StringBuilder execution = new StringBuilder(this.createTypeReference(interfaceOrParent));
-        if(null != executeBefore) {
+        if (null != executeBefore) {
             Arrays.stream(executeBefore)
                     .filter(Objects::nonNull)
                     .map(String::trim)
                     .filter(line -> line.length() > 0)
-                    .map(line -> !line.endsWith(";") ? line + ";\n": line +"\n")
+                    .map(line -> !line.endsWith(";") ? line + ";\n" : line + "\n")
                     .forEach(execution::append);
         }
         execution.append(this.decorateScript(script));

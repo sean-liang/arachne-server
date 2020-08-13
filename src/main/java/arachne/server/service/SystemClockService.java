@@ -4,6 +4,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Simple wrap for system time, mainly for easy testing
+ */
 @Service
 public class SystemClockService {
 

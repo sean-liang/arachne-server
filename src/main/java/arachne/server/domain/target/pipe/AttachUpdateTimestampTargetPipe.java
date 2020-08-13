@@ -49,7 +49,7 @@ public class AttachUpdateTimestampTargetPipe extends AbstractTargetPipe {
                                   final JobFeedback feedback,
                                   final Map<String, Object> context) throws DropFeedbackException {
         return stream.peek(d -> {
-            if(d instanceof Document) {
+            if (d instanceof Document) {
                 ((Document) d).append(this.field, System.currentTimeMillis());
             }
         });

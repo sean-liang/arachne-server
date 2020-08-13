@@ -28,7 +28,7 @@ public class TargetJobStatsUpdate implements Serializable {
     private TargetStatus status;
 
     @Builder.Default
-    private long cStart= 0;
+    private long cStart = 0;
 
     @Builder.Default
     private long cEnd = 0;
@@ -53,7 +53,7 @@ public class TargetJobStatsUpdate implements Serializable {
     private RequestCount r3 = new RequestCount();
 
     public static TargetJobStatsUpdate of(final Target target, final TargetJobStats stats) {
-        final TargetJobStatsUpdate update =  TargetJobStatsUpdate
+        final TargetJobStatsUpdate update = TargetJobStatsUpdate
                 .builder()
                 .id(target.getId())
                 .name(target.getName())
@@ -61,12 +61,12 @@ public class TargetJobStatsUpdate implements Serializable {
                 .nextRun(target.getNextRunAt())
                 .build();
 
-        if(null != target.getCurrentTask()) {
+        if (null != target.getCurrentTask()) {
             update.setCStart(target.getCurrentTask().getStartTime());
             update.setCEnd(target.getCurrentTask().getEndTime());
         }
 
-        if(null != stats) {
+        if (null != stats) {
             update.setReqTs(stats.getLastRequestAt());
             update.setReqIp(stats.getLastRequestIp());
             update.setReqWid(stats.getLastRequestWorkerId());

@@ -36,7 +36,7 @@ class UserControllerTest {
 
     @Test
     void testAuthentication() throws Exception {
-        when(this.userRepo.findOneByUsername("admin")).thenReturn(new User("123", "admin", encoder.encode("password"), 0L));
+        when(this.userRepo.findOneByUsername("admin")).thenReturn(new User("123", "admin", encoder.encode("password")));
 
         this.mvc.perform(get("/admin/token")).andExpect(status().is(401));
 

@@ -26,8 +26,10 @@ public abstract class AbstractTargetPipe implements TargetPipe {
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+    }
 }

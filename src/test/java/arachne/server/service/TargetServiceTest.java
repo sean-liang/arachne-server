@@ -1,7 +1,7 @@
 package arachne.server.service;
 
-import arachne.server.MongoInstance;
 import arachne.server.TestDataUtils;
+import arachne.server.mongo.MongoInstance;
 import arachne.server.repository.TargetRepository;
 import arachne.server.repository.TargetTaskRepository;
 import arachne.server.repository.WorkerRepository;
@@ -9,7 +9,6 @@ import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -33,8 +32,7 @@ public class TargetServiceTest {
     private TargetTaskRepository taskRepo;
 
     @Autowired
-    @Qualifier("nonTransactional")
-    private NonTransactionalTargetService targetService;
+    private TargetService targetService;
 
     @MockBean
     private JobStatsService jobStatsService;

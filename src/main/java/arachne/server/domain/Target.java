@@ -21,9 +21,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.stream.Stream;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @Slf4j
 @Document(collection = "sys_targets")

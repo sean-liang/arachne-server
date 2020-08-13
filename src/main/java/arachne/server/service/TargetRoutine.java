@@ -29,7 +29,7 @@ public class TargetRoutine {
     }
 
     public void handleTarget(final Target target, final long ts) {
-        if(null == target) {
+        if (null == target) {
             return;
         }
         synchronized (target) {

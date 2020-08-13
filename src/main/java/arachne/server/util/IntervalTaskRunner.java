@@ -14,7 +14,7 @@ public class IntervalTaskRunner {
     /**
      * Run task at a fixed interval
      *
-     * @param millis interval in milliseconds
+     * @param millis   interval in milliseconds
      * @param runnable task
      * @return Future representing pending completion of the task
      */

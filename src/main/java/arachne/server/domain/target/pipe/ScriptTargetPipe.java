@@ -6,7 +6,10 @@ import arachne.server.scripting.Script;
 import arachne.server.scripting.ScriptEngine;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.graalvm.polyglot.PolyglotException;
 import org.springframework.data.annotation.Transient;
 
@@ -39,7 +42,7 @@ public class ScriptTargetPipe extends AbstractTargetPipe implements AutoCloseabl
     @Override
     public synchronized void destroy() {
         this.closed = true;
-        if(null != this.script) {
+        if (null != this.script) {
             this.script.close();
             this.script = null;
         }
@@ -47,12 +50,12 @@ public class ScriptTargetPipe extends AbstractTargetPipe implements AutoCloseabl
 
     @Override
     public synchronized Stream<Object> proceed(final Stream<Object> stream,
-                                  final JobFeedback feedback,
-                                  final Map<String, Object> context) throws Throwable {
-        if(this.closed) {
+                                               final JobFeedback feedback,
+                                               final Map<String, Object> context) throws Throwable {
+        if (this.closed) {
             throw new BadRequestException("Pipe closed.");
         }
-        if(null == this.script) {
+        if (null == this.script) {
             this.script = ScriptEngine
                     .engine("js")
                     .createObject(this.content, AbstractTargetPipe.class, null, SCRIPT_HELPERS);
@@ -60,9 +63,9 @@ public class ScriptTargetPipe extends AbstractTargetPipe implements AutoCloseabl
 
         try {
             return this.script.instance().proceed(stream, feedback, context);
-        } catch(PolyglotException ex) {
+        } catch (PolyglotException ex) {
             final Throwable t = ex.asHostException();
-            if(null != t) {
+            if (null != t) {
                 throw t;
             } else {
                 throw ex;

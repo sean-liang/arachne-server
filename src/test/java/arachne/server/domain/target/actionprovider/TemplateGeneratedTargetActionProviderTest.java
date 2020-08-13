@@ -1,10 +1,10 @@
 package arachne.server.domain.target.actionprovider;
 
-import arachne.server.MongoInstance;
 import arachne.server.domain.HttpRequestTemplate;
 import arachne.server.domain.Target;
 import arachne.server.domain.listener.MongoListenerRegistry;
 import arachne.server.domain.target.store.MongoDocumentTargetStore;
+import arachne.server.mongo.MongoInstance;
 import arachne.server.repository.TargetRepository;
 import lombok.val;
 import org.junit.jupiter.api.Test;

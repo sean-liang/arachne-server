@@ -1,6 +1,7 @@
 package arachne.server.domain.target.store;
 
-import arachne.server.MongoInstance;
+import arachne.server.mongo.MongoInstance;
+import com.mongodb.WriteConcern;
 import lombok.val;
 import org.bson.Document;
 import org.junit.jupiter.api.Disabled;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.SessionSynchronization;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -18,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-@Disabled
+//@Disabled
 @DataMongoTest
 @Import({MongoInstance.class})
 class MongoDocumentTargetStoreTest {
@@ -28,10 +30,12 @@ class MongoDocumentTargetStoreTest {
 
     @Test
     void testSetup() throws Exception {
+        template.setWriteConcern(WriteConcern.ACKNOWLEDGED);
         val col = UUID.randomUUID().toString();
         assertFalse(template.collectionExists(col));
         val store = MongoDocumentTargetStore.builder().collection(col).idField("bizid").build();
         store.initialize();
+
         assertTrue(template.collectionExists(col));
 
         val indexBuilt = new AtomicBoolean(false);

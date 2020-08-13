@@ -19,15 +19,15 @@ public class URLFingerprints {
 
     /**
      * Create url fingerprint.<br>
-     *
+     * <p>
      * Format: Method|Header1,Header2|Url|Body<br>
      * Header is sorted in alphabetical order: {@link Collections#sort(List)}<br>
      * Canonicalize url with {@link edu.uci.ics.crawler4j.url.URLCanonicalizer}<br>
      *
-     * @param method http method
+     * @param method  http method
      * @param headers headers (Optional)
-     * @param url url
-     * @param body request body (Optional)
+     * @param url     url
+     * @param body    request body (Optional)
      * @return fingerprint
      * @throws UnsupportedEncodingException
      */

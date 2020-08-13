@@ -7,9 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * Build a memory map of all targets from database
+ */
 @Slf4j
 @Service
 public class TargetCacheBuilder {
@@ -25,14 +28,16 @@ public class TargetCacheBuilder {
 
     public Map<String, Target> build() {
         log.info("Build target cache.");
-        final Map<String, Target> cache = new HashMap<>();
-        this.targetRepo.findAll().forEach(target -> {
-            target.setCurrentTask(this.taskRepo.findFirstByTargetIdOrderByStartTimeDesc(target.getId()));
-            cache.put(target.getId(), target);
-            this.attachListeners(target);
-            log.info("Load Target: {}({})", target.getName(), target.getId());
-        });
-        return cache;
+        return this.targetRepo
+                .findAll()
+                .stream()
+                .map(target -> {
+                    target.setCurrentTask(this.taskRepo.findFirstByTargetIdOrderByStartTimeDesc(target.getId()));
+                    this.attachListeners(target);
+                    log.info("Load Target: {}({})", target.getName(), target.getId());
+                    return target;
+                })
+                .collect(Collectors.toMap(target -> target.getId(), target -> target));
     }
 
     public void attachListeners(final Target target) {

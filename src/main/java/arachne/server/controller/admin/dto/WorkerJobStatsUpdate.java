@@ -42,14 +42,14 @@ public class WorkerJobStatsUpdate implements Serializable {
     private RequestCount r3 = new RequestCount();
 
     public static WorkerJobStatsUpdate of(final Worker worker, final WorkerJobStats stats) {
-        final WorkerJobStatsUpdate update =  WorkerJobStatsUpdate
+        final WorkerJobStatsUpdate update = WorkerJobStatsUpdate
                 .builder()
                 .id(worker.getId())
                 .name(worker.getName())
                 .status(worker.getStatus())
                 .build();
 
-        if(null != stats) {
+        if (null != stats) {
             update.setReqTs(stats.getLastRequestAt());
             update.setReqIp(stats.getLastRequestIp());
             update.setR1(stats.requestCount(0));

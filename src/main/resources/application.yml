@@ -19,9 +19,15 @@ security:
 arachne:
   node:
     id: 100
+  transaction:
+    enabled: true
   job-tracker:
     expire: 180
     ttl: 600
+  intervals:
+    job-stats-broadcast: 1000
+    job-stats-persist: 10000
+    job-stats-persist-gap: 50
 logging:
   level:
     root: INFO

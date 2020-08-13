@@ -1,13 +1,11 @@
 package arachne.server.domain;
 
-import arachne.server.job.JobTracker;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 
 import java.io.Serializable;

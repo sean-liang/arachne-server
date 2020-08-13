@@ -1,10 +1,10 @@
 package arachne.server.domain.target.pipe;
 
-import arachne.server.MongoInstance;
 import arachne.server.TestDataUtils;
 import arachne.server.domain.JobFeedbackContentType;
 import arachne.server.domain.feedback.JobFeedback;
 import arachne.server.domain.target.store.MongoDocumentTargetStore;
+import arachne.server.mongo.MongoInstance;
 import lombok.val;
 import org.bson.Document;
 import org.junit.jupiter.api.Test;
@@ -68,7 +68,7 @@ public class AttachUpdateTimestampTargetPipeTest {
         val list = result.toArray();
         assertEquals(1, list.length);
         assertTrue(list[0] instanceof Document);
-        val doc = (Document)list[0];
+        val doc = (Document) list[0];
         assertTrue(doc.containsKey("updatedAt"));
         assertTrue(System.currentTimeMillis() - (long) doc.get("updatedAt") < 1000);
     }

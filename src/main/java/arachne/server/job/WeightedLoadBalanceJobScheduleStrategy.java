@@ -42,7 +42,7 @@ public class WeightedLoadBalanceJobScheduleStrategy implements JobScheduleStrate
             int amount = (total * target.getWeight() - 1) / totalWeight + 1;
             amount = Math.min(amount, remaining);
             final List<Job> targetJobs = this.allocator.allocate(worker, target, amount);
-            if(null != targetJobs) {
+            if (null != targetJobs) {
                 if (!targetJobs.isEmpty()) {
                     jobs.addAll(targetJobs);
                     remaining = remaining - targetJobs.size();

@@ -15,8 +15,8 @@ public class JobStatsLogRepositoryCustomImpl implements JobStatsLogRepositoryCus
     private MongoTemplate mongo;
 
     @Override
-    public void persistOnDirty(final String keyField, final String key, final JobStats stat) {
-        stat.persistIfDirty(slicer -> {
+    public boolean persistOnDirty(final String keyField, final String key, final JobStats stat) {
+        return stat.persistIfDirty(slicer -> {
             final Query query = new Query(where(keyField).is(key));
             final Update update = new Update();
             update.set("meta", slicer.getMeta());

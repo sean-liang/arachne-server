@@ -3,7 +3,6 @@ package arachne.server.domain.feedback;
 import arachne.server.domain.JobFeedbackContentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.bson.Document;
 
 import java.io.Serializable;
@@ -30,9 +29,9 @@ public class JobFeedback implements Serializable {
     }
 
     public Object content() {
-        if(JobFeedbackContentType.BINARY == this.type) {
+        if (JobFeedbackContentType.BINARY == this.type) {
             return this.content;
-        } else if(JobFeedbackContentType.TEXT == this.type) {
+        } else if (JobFeedbackContentType.TEXT == this.type) {
             return this.toText();
         } else {
             return Document.parse(this.toText());

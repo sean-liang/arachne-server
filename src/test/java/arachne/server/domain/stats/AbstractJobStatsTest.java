@@ -3,12 +3,10 @@ package arachne.server.domain.stats;
 import arachne.server.TestDataUtils;
 import arachne.server.TestSystemClockService;
 import arachne.server.domain.Job;
-import arachne.server.service.SystemClockService;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -123,7 +121,7 @@ public class AbstractJobStatsTest {
         }
 
         public TestSystemClockService clock() {
-            return (TestSystemClockService)super.clock;
+            return (TestSystemClockService) super.clock;
         }
 
         @Override

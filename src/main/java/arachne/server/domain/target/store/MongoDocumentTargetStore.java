@@ -1,6 +1,6 @@
 package arachne.server.domain.target.store;
 
-import arachne.server.MongoInstance;
+import arachne.server.mongo.MongoInstance;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.mongodb.client.MongoCollection;
 import lombok.*;

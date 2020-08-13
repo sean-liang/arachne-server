@@ -24,13 +24,13 @@ public class ScriptTargetPipeTest {
         pipe.setContent(script);
 
         pipe.initialize();
-        val stream = pipe.proceed(Stream.of(1,2,3), null, null);
-        assertEquals(Arrays.asList(2,4,6), stream.collect(Collectors.toList()));
+        val stream = pipe.proceed(Stream.of(1, 2, 3), null, null);
+        assertEquals(Arrays.asList(2, 4, 6), stream.collect(Collectors.toList()));
 
         try {
             pipe.proceed(null, null, null);
             fail("Should drop exception");
-        } catch(DropFeedbackException ex) {
+        } catch (DropFeedbackException ex) {
 
         }
 

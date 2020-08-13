@@ -5,6 +5,7 @@ import arachne.server.controller.admin.dto.JobStatsUpdate;
 import arachne.server.util.IntervalTaskRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Future;
@@ -14,12 +15,15 @@ import java.util.function.Supplier;
 @Component
 public class JobStatsBroadcastRoutine {
 
+    @Value("${arachne.intervals.job-stats-broadcast}")
+    private int interval;
+
     @Autowired
     private AdminWebsocketDashboardHandler adminDashboard;
 
     public Future<?> run(final Supplier<JobStatsUpdate> supplier) {
         log.info("Job Stats Broadcast Routine Thread Started.");
-        return IntervalTaskRunner.run(1000, () -> this.broadcast(supplier));
+        return IntervalTaskRunner.run(interval, () -> this.broadcast(supplier));
     }
 
     public void broadcast(final Supplier<JobStatsUpdate> supplier) {

@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class JobStatsService {
 
+    private final ConcurrentHashMap<String, TargetJobStats> targetStats = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<String, WorkerJobStats> workerStats = new ConcurrentHashMap<>();
+
     @Autowired
-    private NonTransactionalTargetService targetService;
+    private TargetService targetService;
 
     @Autowired
     private WorkerService workerService;
@@ -30,10 +34,6 @@ public class JobStatsService {
 
     @Autowired
     private SystemClockService clock;
-
-    private final ConcurrentHashMap<String, TargetJobStats> targetStats = new ConcurrentHashMap<>();
-
-    private final ConcurrentHashMap<String, WorkerJobStats> workerStats = new ConcurrentHashMap<>();
 
     @PostConstruct
     private void startup() {
@@ -53,7 +53,6 @@ public class JobStatsService {
     public void broadcast() {
         this.broadcastRoutine.broadcast(this::buildUpdate);
     }
-
 
     private JobStatsUpdate buildUpdate() {
         return new JobStatsUpdate(

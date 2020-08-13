@@ -34,7 +34,7 @@ public class CronExpression {
     /**
      * Calculate the next execution timestamp after the given timestamp
      *
-     * @param cronExpression unix pattern cron expressions
+     * @param cronExpression     unix pattern cron expressions
      * @param afterThisTimestamp given timestamp
      * @return next execution timestamp after the given timestamp
      */

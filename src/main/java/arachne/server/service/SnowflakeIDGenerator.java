@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
+/**
+ * Snowflake style id generator
+ */
 @Service
 public class SnowflakeIDGenerator {
 
@@ -13,7 +16,7 @@ public class SnowflakeIDGenerator {
     private static final int SEQUENCE_BITS = 12;
     private static final long MAX_SEQUENCE = (1L << SEQUENCE_BITS) - 1;
     // Epoch (January 1, 2020 Midnight UTC = 2020-01-01T00:00:00Z)
-    private static final long EPOCH = 1420070400000L;
+    private static final long EPOCH = 1577836800000L;
     @Value("${arachne.node.id}")
     private long nodeId;
     private volatile long lastTimestamp = -1L;

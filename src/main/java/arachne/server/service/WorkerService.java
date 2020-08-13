@@ -3,6 +3,7 @@ package arachne.server.service;
 import arachne.server.controller.admin.form.WorkerForm;
 import arachne.server.domain.Worker;
 import arachne.server.exceptions.ResourceNotFoundException;
+import arachne.server.mongo.MongoTransactionAwareExecutor;
 import arachne.server.repository.WorkerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,14 @@ public class WorkerService {
     private final ConcurrentHashMap<String, Worker> workers = new ConcurrentHashMap<>();
 
     @Autowired
+    private MongoTransactionAwareExecutor transaction;
+
+    @Autowired
     private WorkerRepository repo;
 
     @PostConstruct
     private void loadWorkers() {
+        // cache workers in memory
         this.repo.findAll().forEach(worker -> {
             this.workers.put(worker.getId(), worker);
             log.info("Load Worker: {}({})", worker.getName(), worker.getId());
@@ -78,15 +83,19 @@ public class WorkerService {
     }
 
     public synchronized Worker updateWorker(final String id, final WorkerForm form) {
-        final Worker worker = this.getById(id).orElseThrow(ResourceNotFoundException::new);
-        form.applyTo(worker);
-        return this.repo.save(worker);
+        return this.transaction.execute(() -> {
+            final Worker worker = this.getById(id).orElseThrow(ResourceNotFoundException::new);
+            form.applyTo(worker);
+            return this.repo.save(worker);
+        });
     }
 
     public synchronized void removeWorker(final String id) {
-        final Worker worker = this.getById(id).orElseThrow(ResourceNotFoundException::new);
-        this.repo.deleteById(worker.getId());
-        this.workers.remove(id);
+        this.transaction.execute(() -> {
+            final Worker worker = this.getById(id).orElseThrow(ResourceNotFoundException::new);
+            this.repo.deleteById(worker.getId());
+            this.workers.remove(id);
+        });
     }
 
 }

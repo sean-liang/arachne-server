@@ -85,7 +85,7 @@ public abstract class AbstractJobStats implements JobStats {
     }
 
     @Override
-    public synchronized void persistIfDirty(final Consumer<JobStatsSlice> serializer) {
+    public synchronized boolean persistIfDirty(final Consumer<JobStatsSlice> serializer) {
         if (this.dirty && serializer != null) {
             final long minute = this.clock.currentTimeMinutes();
             final JobStatsSlice slice = new JobStatsSlice(this.windows
@@ -98,7 +98,9 @@ public abstract class AbstractJobStats implements JobStats {
             this.pack();
             this.dirty = false;
             this.lastPersistAt = minute;
+            return true;
         }
+        return false;
     }
 
     protected abstract void onFeed(Job job, String ip, boolean isSuccess);

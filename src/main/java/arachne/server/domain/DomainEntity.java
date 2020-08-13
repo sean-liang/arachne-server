@@ -1,7 +1,7 @@
 package arachne.server.domain;
 
-import arachne.server.MongoInstance;
 import arachne.server.exceptions.ServerFailureException;
+import arachne.server.mongo.MongoInstance;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.query.Query;
