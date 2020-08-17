@@ -17,11 +17,9 @@ public class JobFeedback implements Serializable {
     private final JobFeedbackContentType type;
 
     private final long id;
-
+    private String targetId;
     private final int status;
-
     private final String meta;
-
     private final byte[] content;
 
     public boolean isSuccess() {

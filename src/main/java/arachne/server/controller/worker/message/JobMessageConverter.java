@@ -2,6 +2,7 @@ package arachne.server.controller.worker.message;
 
 import arachne.server.controller.worker.message.WorkerProtocol.JobMessage;
 import arachne.server.controller.worker.message.WorkerProtocol.JobMessageList;
+import arachne.server.controller.worker.message.WorkerProtocol.UUID;
 import arachne.server.domain.HttpHeader;
 import arachne.server.domain.Job;
 import arachne.server.domain.JobAction;
@@ -26,7 +27,7 @@ public class JobMessageConverter {
     }
 
     public static JobMessage toMessage(final Job job) {
-        return JobMessage.newBuilder().setId(job.getId()).setRetries(job.getRetries())
+        return JobMessage.newBuilder().setId(job.getId()).setTargetId(toUUID(job.getTargetId())).setRetries(job.getRetries())
                 .setAction(toMessageAction(job.getAction())).build();
     }
 
@@ -51,6 +52,7 @@ public class JobMessageConverter {
         return new JobFeedback(
                 JobFeedbackContentType.valueOf(feedback.getContentTypeValue()),
                 feedback.getId(),
+                fromUUID(feedback.getTargetId()),
                 feedback.getStatus(),
                 feedback.getMeta(),
                 feedback.getContent().toByteArray());
@@ -69,5 +71,14 @@ public class JobMessageConverter {
                         .map(JobMessageConverter::toJobFeedbackMessage)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    public static UUID toUUID(final String id) {
+        final java.util.UUID uuid = java.util.UUID.fromString(id);
+        return WorkerProtocol.UUID.newBuilder().setMost(uuid.getMostSignificantBits()).setLeast(uuid.getLeastSignificantBits()).build();
+    }
+
+    public static String fromUUID(final WorkerProtocol.UUID uuid) {
+        return new java.util.UUID(uuid.getMost(), uuid.getLeast()).toString();
     }
 }

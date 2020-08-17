@@ -15,8 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

@@ -80,7 +80,7 @@ public class TargetService {
         try {
             try {
                 saved.initialize();
-            } catch(Throwable t) {
+            } catch (Throwable t) {
                 log.error("Error create target: {}-{}", saved.getId(), saved.getName(), t);
                 this.removeTarget(saved.getId());
                 throw t;
@@ -171,7 +171,7 @@ public class TargetService {
         try {
             try {
                 removed.destroy();
-            } catch(Throwable t) {
+            } catch (Throwable t) {
                 log.error("Error destroy target: {}-{}", removed.getId(), removed.getName(), t);
                 throw t;
             } finally {

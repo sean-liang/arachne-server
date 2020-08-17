@@ -23,7 +23,7 @@ public class TestDataUtils {
     }
 
     public static JobFeedback createJobFeedback(final JobFeedbackContentType type, long id, int status) {
-        return new JobFeedback(type, id, status, null, "{'k': 'v'}".getBytes());
+        return new JobFeedback(type, id, "target1", status, null, "{'k': 'v'}".getBytes());
     }
 
     public static Job createJob(final String workerId, final String targetId, final JobAction action) {

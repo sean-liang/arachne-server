@@ -60,7 +60,7 @@ public class AttachUpdateTimestampTargetPipeTest {
     @Test
     void testProceed() throws DropFeedbackException {
         val pipe = this.createPipe();
-        val feedback = new JobFeedback(JobFeedbackContentType.JSON, 1L, 200, null, "{}".getBytes());
+        val feedback = new JobFeedback(JobFeedbackContentType.JSON, 1L, "target1", 200, null, "{}".getBytes());
         val context = new HashMap<String, Object>();
 
         val result = pipe.proceed(Stream.of(feedback.content()), feedback, context);

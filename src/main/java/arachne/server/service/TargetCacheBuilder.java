@@ -45,6 +45,8 @@ public class TargetCacheBuilder {
         target.getListeners().add(this.taskService);
     }
 
-    public void initializePipes(final Target target) { target.getPipes().forEach(pipe -> pipe.setTarget(target)); }
+    public void initializePipes(final Target target) {
+        target.getPipes().forEach(pipe -> pipe.setTarget(target));
+    }
 
 }

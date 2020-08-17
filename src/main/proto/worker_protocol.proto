@@ -21,7 +21,8 @@ message JobMessage {
     }
     int64 id = 1;
     int32 retries = 2;
-    JobAction action = 3;
+    UUID targetId = 3;
+    JobAction action = 4;
 }
 
 message JobMessageList {
@@ -36,13 +37,19 @@ message JobFeedbackMessage {
     }
     int64 id = 1;
     int32 status = 2;
-    string meta = 3;
-    ContentType contentType = 4;
-    bytes content = 5;
+    UUID targetId = 3;
+    string meta = 4;
+    ContentType contentType = 5;
+    bytes content = 6;
 }
 
 message JobFeedbackMessageList {
     repeated JobFeedbackMessage feedback = 3;
+}
+
+message UUID {
+    int64 most = 1;
+    int64 least = 2;
 }
 
 message JobRequest {
