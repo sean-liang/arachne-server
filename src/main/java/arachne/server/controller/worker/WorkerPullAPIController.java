@@ -40,7 +40,7 @@ public class WorkerPullAPIController {
     }
 
     @PostMapping("/jobs")
-    public void pushResults(@RequestParam(name = "nx", required = false, defaultValue = "false") boolean fetchNext,
+    public void pushResults(@RequestParam(name = "n", required = false, defaultValue = "false") boolean fetchNext,
                             final Principal principal, final HttpServletRequest request, final HttpServletResponse response) {
         final Worker worker = this.workerService.getById(principal.getName())
                 .orElseThrow(ResourceNotFoundException::new);

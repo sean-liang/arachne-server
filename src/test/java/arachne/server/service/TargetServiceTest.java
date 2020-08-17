@@ -5,6 +5,7 @@ import arachne.server.mongo.MongoInstance;
 import arachne.server.repository.TargetRepository;
 import arachne.server.repository.TargetTaskRepository;
 import arachne.server.repository.WorkerRepository;
+import com.google.common.collect.Sets;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +61,7 @@ public class TargetServiceTest {
         this.targetService.updateTarget(target.getId(), TestDataUtils.createTargetForm("test-target2", worker2));
         val found = this.targetService.getById(target.getId()).get();
         assertEquals("test-target2", found.getName());
-        assertEquals(found.getWorkers(), Arrays.asList(worker2.getId()));
+        assertEquals(found.getWorkers(), Sets.newHashSet(worker2.getId()));
 
         this.targetService.removeTarget(target.getId());
         assertEquals(0, this.targetRepo.count());

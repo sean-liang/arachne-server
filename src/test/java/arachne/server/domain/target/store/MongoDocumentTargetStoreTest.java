@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-//@Disabled
+@Disabled
 @DataMongoTest
 @Import({MongoInstance.class})
 class MongoDocumentTargetStoreTest {

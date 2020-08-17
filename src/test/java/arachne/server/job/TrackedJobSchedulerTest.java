@@ -93,7 +93,7 @@ public class TrackedJobSchedulerTest {
         val feedback = TestDataUtils.createJobFeedback(JobFeedbackContentType.JSON, 1L, 404);
         val list = TestDataUtils.createJobFeedbackList("w1", feedback);
         this.scheduler.feed(worker, list);
-        verify(target, times(1)).feed(eq(feedback));
+        verify(target, never()).feed(any());
     }
 
     @Test

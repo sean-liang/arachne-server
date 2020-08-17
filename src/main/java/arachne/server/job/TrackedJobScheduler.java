@@ -45,13 +45,14 @@ public class TrackedJobScheduler implements JobScheduler {
         list.getFeedback().forEach(fb -> {
             this.tracker.get(fb.getId()).ifPresent(job -> {
                 this.targetService.getById(job.getTargetId()).ifPresent(target -> {
-
                     this.jobStats.feed(job, list.getIp(), fb.isSuccess());
-
-                    final int retries = target.getRetries();
-                    if (fb.isSuccess()
-                            || TargetStatus.RUNNING != target.getStatus()
-                            || !(RetryStrategy.CLUSTER == target.getRetryStrategy() && job.failAndNeedRetry(target.getRetries()))) {
+                    if (TargetStatus.RUNNING != target.getStatus()) {
+                        // Drop if target is not running
+                        this.tracker.remove(job.getId());
+                        return;
+                    } else if (!fb.isSuccess() && (RetryStrategy.CLUSTER == target.getRetryStrategy() && job.failAndNeedRetry(target.getRetries()))) {
+                        // fail and cluster retry
+                    } else {
                         this.tracker.remove(job.getId());
                         target.feed(fb);
                     }

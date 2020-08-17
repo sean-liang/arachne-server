@@ -8,7 +8,7 @@ import arachne.server.exceptions.BadRequestException;
 import arachne.server.exceptions.ResourceNotFoundException;
 import arachne.server.mongo.MongoTransactionAwareExecutor;
 import arachne.server.repository.TargetRepository;
-import arachne.server.util.ListDiffer;
+import arachne.server.util.CollectionDiffer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -120,7 +119,7 @@ public class TargetService {
             if (null != form.getPipes()) {
                 form.getPipes().forEach(pipe -> pipe.setTarget(target));
             }
-            ListDiffer.diff(
+            CollectionDiffer.diff(
                     target.getPipes(),
                     form.getPipes(),
                     TargetPipe::destroy,
@@ -168,6 +167,7 @@ public class TargetService {
         target.checkStatus(true, TargetStatus.SCHEDULED, TargetStatus.DONE, TargetStatus.DISABLED, TargetStatus.FAIL);
         this.targetRepo.deleteById(target.getId());
         final Target removed = this.targets.remove(id);
+        removed.getPipes().clear();
         try {
             try {
                 removed.destroy();
@@ -175,6 +175,7 @@ public class TargetService {
                 log.error("Error destroy target: {}-{}", removed.getId(), removed.getName(), t);
                 throw t;
             } finally {
+                removed.getListeners().clear();
                 this.jobStatsService.broadcast();
             }
         } catch (Throwable t) {

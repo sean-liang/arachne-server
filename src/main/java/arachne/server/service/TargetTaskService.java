@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class TargetTaskService implements TargetListener {
+public class TargetTaskService extends AbstractTargetListener {
 
     @Autowired
     private TargetTaskRepository repo;

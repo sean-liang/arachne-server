@@ -60,9 +60,9 @@ public class Target implements DomainEntity {
     @Builder.Default
     private boolean cancelPrevious = true;
 
-    private List<String> workers;
+    private Set<String> workers;
 
-    private List<TargetPipe> pipes;
+    private Set<TargetPipe> pipes;
 
     private TargetActionProvider provider;
 
@@ -89,7 +89,7 @@ public class Target implements DomainEntity {
     @Builder.Default
     @JsonIgnore
     @Transient
-    private transient List<TargetListener> listeners = new ArrayList<>();
+    private transient Set<TargetListener> listeners = new HashSet<>();
 
     @SuppressWarnings("unchecked")
     public <T extends TargetActionProvider> T provider() {
@@ -130,7 +130,11 @@ public class Target implements DomainEntity {
     }
 
     public void onActionExpire(final JobAction action) {
+        this.listeners.forEach(l -> l.onActionExpire(action));
+    }
 
+    public void onActionFail(final JobAction action, final int status) {
+        this.listeners.forEach(l -> l.onActionFail(action, status));
     }
 
     public synchronized void schedule(final long ts) {

@@ -14,7 +14,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -42,7 +44,7 @@ public class TargetForm implements Serializable {
     private boolean cancelPrevious;
 
     @NotNull
-    private List<String> workers;
+    private Set<String> workers;
 
     @NotNull
     private TargetActionProvider provider;
@@ -50,7 +52,7 @@ public class TargetForm implements Serializable {
     @NotNull
     private TargetStore store;
 
-    private List<TargetPipe> pipes;
+    private Set<TargetPipe> pipes;
 
     public void applyTo(final Target target) {
         target.setName(this.name);
@@ -63,7 +65,7 @@ public class TargetForm implements Serializable {
         target.setWorkers(this.workers);
         target.setProvider(this.provider);
         target.setStore(this.store);
-        target.setPipes(null == this.pipes ? new ArrayList<>() : new ArrayList<>(this.pipes));
+        target.setPipes(null == this.pipes ? new HashSet<>() : new HashSet<>(this.pipes));
     }
 
 }

@@ -34,6 +34,7 @@ public class TargetCacheBuilder {
                 .map(target -> {
                     target.setCurrentTask(this.taskRepo.findFirstByTargetIdOrderByStartTimeDesc(target.getId()));
                     this.attachListeners(target);
+                    this.initializePipes(target);
                     log.info("Load Target: {}({})", target.getName(), target.getId());
                     return target;
                 })
@@ -43,5 +44,7 @@ public class TargetCacheBuilder {
     public void attachListeners(final Target target) {
         target.getListeners().add(this.taskService);
     }
+
+    public void initializePipes(final Target target) { target.getPipes().forEach(pipe -> pipe.setTarget(target)); }
 
 }

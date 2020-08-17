@@ -65,7 +65,7 @@ public class TestDataUtils {
                 .repetition(TargetRepetition.NEVER)
                 .repetitionConfig(null)
                 .cancelPrevious(true)
-                .workers(null != workers && workers.length != 0 ? Arrays.stream(workers).map(Worker::getId).collect(Collectors.toList()) : Collections.emptyList())
+                .workers(null != workers && workers.length != 0 ? Arrays.stream(workers).map(Worker::getId).collect(Collectors.toSet()) : Collections.emptySet())
                 .provider(createTemplateGeneratedTargetActionProvider())
                 .store(MongoDocumentTargetStore.builder().collection("testcol").idField("testfld").build())
                 .build();
@@ -81,7 +81,7 @@ public class TestDataUtils {
                 .repetition(TargetRepetition.NEVER)
                 .repetitionConfig(null)
                 .cancelPrevious(true)
-                .workers(null != workers && workers.length != 0 ? Arrays.stream(workers).map(Worker::getId).collect(Collectors.toList()) : Collections.emptyList())
+                .workers(null != workers && workers.length != 0 ? Arrays.stream(workers).map(Worker::getId).collect(Collectors.toSet()) : Collections.emptySet())
                 .provider(createTemplateGeneratedTargetActionProvider())
                 .store(MongoDocumentTargetStore.builder().collection("testcol").idField("testfld").build())
                 .build();
