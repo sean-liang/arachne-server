@@ -7,6 +7,7 @@ import arachne.server.domain.Worker;
 import arachne.server.exceptions.BadRequestException;
 import arachne.server.exceptions.ResourceNotFoundException;
 import arachne.server.exceptions.ServerFailureException;
+import arachne.server.job.FeedbackDispatcher;
 import arachne.server.job.JobScheduler;
 import arachne.server.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class WorkerPullAPIController {
     @Autowired
     private JobScheduler scheduler;
 
+    @Autowired
+    private FeedbackDispatcher dispatcher;
+
     @GetMapping("/current")
     public Worker current(final Principal principal) {
         return this.workerService.getById(principal.getName()).orElseThrow(ResourceNotFoundException::new);
@@ -46,7 +50,7 @@ public class WorkerPullAPIController {
                 .orElseThrow(ResourceNotFoundException::new);
         try {
             final WorkerProtocol.JobFeedbackMessageList msg = WorkerProtocol.JobFeedbackMessageList.parseFrom(request.getInputStream());
-            this.scheduler.feed(worker, JobMessageConverter.toJobFeedbackMessageList(worker.getId(), request.getRemoteAddr(), msg));
+            this.dispatcher.feed(worker, JobMessageConverter.toJobFeedbackMessageList(worker.getId(), request.getRemoteAddr(), msg));
             if (fetchNext) {
                 this.takeAndWriteJobs(worker, response);
             }

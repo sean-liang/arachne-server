@@ -74,11 +74,17 @@ public class JobMessageConverter {
     }
 
     public static UUID toUUID(final String id) {
+        if(null == id) {
+            return null;
+        }
         final java.util.UUID uuid = java.util.UUID.fromString(id);
         return WorkerProtocol.UUID.newBuilder().setMost(uuid.getMostSignificantBits()).setLeast(uuid.getLeastSignificantBits()).build();
     }
 
     public static String fromUUID(final WorkerProtocol.UUID uuid) {
+        if(null == uuid) {
+            return null;
+        }
         return new java.util.UUID(uuid.getMost(), uuid.getLeast()).toString();
     }
 }
