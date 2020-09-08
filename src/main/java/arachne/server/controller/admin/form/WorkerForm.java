@@ -1,7 +1,7 @@
 package arachne.server.controller.admin.form;
 
 import arachne.server.domain.Worker;
-import arachne.server.domain.WorkerEngine;
+import arachne.server.domain.WorkerProtocol;
 import arachne.server.domain.WorkerStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +26,9 @@ public class WorkerForm implements Serializable {
     private List<String> tags;
 
     @NotNull
-    private WorkerEngine engine;
+    private WorkerProtocol protocol;
+
+    private boolean managed;
 
     @NotNull
     private WorkerStatus status;
@@ -36,7 +38,8 @@ public class WorkerForm implements Serializable {
     public void applyTo(final Worker worker) {
         worker.setName(this.name);
         worker.setTags(this.tags);
-        worker.setEngine(this.engine);
+        worker.setProtocol(this.protocol);
+        worker.setManaged(this.managed);
         worker.setStatus(this.status);
         worker.setBatchSize(this.batchSize);
     }

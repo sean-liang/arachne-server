@@ -22,9 +22,13 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+/**
+ * Target
+ */
 @Slf4j
 @Document(collection = "sys_targets")
 @Data
@@ -101,6 +105,34 @@ public class Target implements DomainEntity {
         return (T) this.store;
     }
 
+    public void withProvider(final Consumer<TargetActionProvider> func) {
+        Optional.ofNullable(this.provider).ifPresent(func);
+    }
+
+    public void withStore(final Consumer<TargetStore> func) {
+        Optional.ofNullable(this.store).ifPresent(func);
+    }
+
+    public void withPipes(final Consumer<Collection<TargetPipe>> func) {
+        Optional.ofNullable(this.pipes).ifPresent(func);
+    }
+
+    public void withListeners(final Consumer<Collection<TargetListener>> func) {
+        Optional.ofNullable(this.listeners).ifPresent(func);
+    }
+
+    public void withWorkers(final Consumer<Collection<String>> func) {
+        Optional.ofNullable(this.workers).ifPresent(func);
+    }
+
+    public void withEachPipe(final Consumer<TargetPipe> func) {
+        this.withPipes(list -> list.forEach(func));
+    }
+
+    public void withEachListener(final Consumer<TargetListener> func) {
+        this.withListeners(list -> list.forEach(func));
+    }
+
     public boolean matchWorker(final String workerId) {
         return this.workers != null && this.workers.contains(workerId);
     }
@@ -119,22 +151,18 @@ public class Target implements DomainEntity {
             }
         }
         stream.forEach(data -> {
-            if (null != this.provider) {
-                this.provider.feed(data, feedback, context);
-            }
-            if (null != this.store) {
-                this.store.save(data);
-            }
+            this.withProvider(p -> p.feed(data, feedback, context));
+            this.withStore(s -> s.save(data));
         });
 
     }
 
     public void onActionExpire(final JobAction action) {
-        this.listeners.forEach(l -> l.onActionExpire(action));
+        this.withEachListener(l -> l.onActionExpire(action));
     }
 
     public void onActionFail(final JobAction action, final int status) {
-        this.listeners.forEach(l -> l.onActionFail(action, status));
+        this.withEachListener(l -> l.onActionFail(action, status));
     }
 
     public synchronized void schedule(final long ts) {
@@ -149,14 +177,21 @@ public class Target implements DomainEntity {
 
     public synchronized void start() {
         this.updateStatus(() -> TargetStatus.RUNNING, "START", () -> {
-            this.provider.reset();
+            final Update update = new Update();
+            this.withProvider(p -> {
+                p.reset();
+                update.set("provider", this.provider);
+            });
             this.calculateNextRunAt(System.currentTimeMillis());
-            return new Update().set("nextRunAt", this.nextRunAt).set("provider", this.provider);
+            return update.set("nextRunAt", this.nextRunAt);
         }, TargetStatus.SCHEDULED, TargetStatus.FAIL, TargetStatus.DONE, TargetStatus.DISABLED);
     }
 
     public synchronized void stop() {
-        this.updateStatus(() -> this.repetition == TargetRepetition.NEVER ? TargetStatus.DONE : TargetStatus.SCHEDULED, "STOP", () -> {
+        this.updateStatus(() ->
+                this.repetition == TargetRepetition.NEVER ? TargetStatus.DONE : TargetStatus.SCHEDULED,
+                "STOP",
+                () -> {
             this.calculateNextRunAt(0);
             return new Update().set("nextRunAt", this.nextRunAt);
         }, TargetStatus.SCHEDULED, TargetStatus.RUNNING, TargetStatus.PAUSED);
@@ -185,24 +220,18 @@ public class Target implements DomainEntity {
     }
 
     public synchronized void initialize() {
-        Optional.ofNullable(this.provider).ifPresent(TargetActionProvider::initialize);
-        Optional.ofNullable(this.store).ifPresent(TargetStore::initialize);
-        if (null != this.pipes) {
-            this.pipes.forEach(TargetPipe::initialize);
-        }
+        this.withProvider(TargetActionProvider::initialize);
+        this.withStore(TargetStore::initialize);
+        this.withEachPipe(TargetPipe::initialize);
         this.notifyCreated();
     }
 
     public synchronized void destroy() {
-        if (null != this.pipes) {
-            this.pipes.forEach(TargetPipe::destroy);
-        }
+        this.withEachPipe(TargetPipe::destroy);
         Optional.ofNullable(this.store).ifPresent(TargetStore::destroy);
         Optional.ofNullable(this.provider).ifPresent(TargetActionProvider::destroy);
         this.notifyDestroyed();
-        if (null != this.listeners) {
-            this.listeners.clear();
-        }
+        this.withListeners(Collection::clear);
     }
 
     public synchronized void runOnStatus(final TargetStatus expectation, final Consumer<Target> consumer) {
@@ -220,16 +249,15 @@ public class Target implements DomainEntity {
     }
 
     public void notifyCreated() {
-        Optional.ofNullable(this.listeners).ifPresent(list -> list.forEach(l -> l.onCreated(this)));
+        this.withEachListener(l -> l.onCreated(this));
     }
 
     public void notifyDestroyed() {
-        Optional.ofNullable(this.listeners).ifPresent(list -> list.forEach(l -> l.onDestroyed(this)));
+        this.withEachListener(l -> l.onDestroyed(this));
     }
 
     public void notifyStatusChanged(final TargetStatus previousStatus, final String message) {
-        Optional.ofNullable(this.listeners)
-                .ifPresent(list -> list.forEach(l -> l.onStatusChanged(this, previousStatus, message)));
+        this.withEachListener(l -> l.onStatusChanged(this, previousStatus, message));
     }
 
     private void calculateNextRunAt(long ts) {

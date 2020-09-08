@@ -41,7 +41,8 @@ public class TestDataUtils {
                 .name(name)
                 .tags(Arrays.asList("TEST"))
                 .token("token-" + name)
-                .engine(WorkerEngine.HTTP_PULL)
+                .protocol(WorkerProtocol.HTTP)
+                .managed(true)
                 .batchSize(10)
                 .status(WorkerStatus.DISABLED)
                 .build();

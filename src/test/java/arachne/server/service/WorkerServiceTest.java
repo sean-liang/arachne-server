@@ -1,7 +1,7 @@
 package arachne.server.service;
 
 import arachne.server.controller.admin.form.WorkerForm;
-import arachne.server.domain.WorkerEngine;
+import arachne.server.domain.WorkerProtocol;
 import arachne.server.domain.WorkerStatus;
 import arachne.server.repository.WorkerRepository;
 import lombok.val;
@@ -32,14 +32,22 @@ public class WorkerServiceTest {
 
     @Test
     void testCRUD() {
-        val createForm = WorkerForm.builder().name("name1").tags(Arrays.asList("JP", "TEST")).engine(WorkerEngine.HTTP_PULL).status(WorkerStatus.DISABLED).batchSize(100).build();
+        val createForm = WorkerForm.builder()
+                .name("name1")
+                .tags(Arrays.asList("JP", "TEST"))
+                .protocol(WorkerProtocol.HTTP)
+                .managed(true)
+                .status(WorkerStatus.DISABLED)
+                .batchSize(100)
+                .build();
         assertEquals(0, this.repo.count());
 
         val saved = this.workerService.addWorker(createForm);
         assertEquals(1, this.repo.count());
         assertEquals(createForm.getName(), saved.getName());
         assertEquals(createForm.getTags(), saved.getTags());
-        assertEquals(createForm.getEngine(), saved.getEngine());
+        assertEquals(createForm.getProtocol(), saved.getProtocol());
+        assertEquals(createForm.isManaged(), saved.isManaged());
         assertEquals(createForm.getStatus(), saved.getStatus());
         assertEquals(createForm.getBatchSize(), saved.getBatchSize());
 
@@ -48,15 +56,24 @@ public class WorkerServiceTest {
         assertEquals(get.get().getId(), saved.getId());
         assertEquals(get.get().getName(), saved.getName());
         assertEquals(get.get().getTags(), saved.getTags());
-        assertEquals(get.get().getEngine(), saved.getEngine());
+        assertEquals(get.get().getProtocol(), saved.getProtocol());
+        assertEquals(get.get().isManaged(), saved.isManaged());
         assertEquals(get.get().getStatus(), saved.getStatus());
         assertEquals(get.get().getBatchSize(), saved.getBatchSize());
 
-        val updateForm = WorkerForm.builder().name("name2").tags(Arrays.asList("US", "PROD")).engine(WorkerEngine.WS_PUSH).status(WorkerStatus.NORMAL).batchSize(20).build();
+        val updateForm = WorkerForm.builder()
+                .name("name2")
+                .tags(Arrays.asList("US", "PROD"))
+                .protocol(WorkerProtocol.WebSocket)
+                .managed(true)
+                .status(WorkerStatus.NORMAL)
+                .batchSize(20)
+                .build();
         val updated = this.workerService.updateWorker(saved.getId(), updateForm);
         assertEquals(updateForm.getName(), updated.getName());
         assertEquals(updateForm.getTags(), updated.getTags());
-        assertEquals(updateForm.getEngine(), updated.getEngine());
+        assertEquals(updateForm.getProtocol(), updated.getProtocol());
+        assertEquals(updateForm.isManaged(), updated.isManaged());
         assertEquals(updateForm.getStatus(), updated.getStatus());
         assertEquals(updateForm.getBatchSize(), updated.getBatchSize());
 
@@ -69,9 +86,30 @@ public class WorkerServiceTest {
 
     @Test
     void testGetWorkersPageable() {
-        val createForm1 = WorkerForm.builder().name("name1").tags(Arrays.asList("JP", "TEST")).engine(WorkerEngine.HTTP_PULL).status(WorkerStatus.DISABLED).batchSize(100).build();
-        val createForm2 = WorkerForm.builder().name("name2").tags(Arrays.asList("JP", "TEST")).engine(WorkerEngine.HTTP_PULL).status(WorkerStatus.DISABLED).batchSize(100).build();
-        val createForm3 = WorkerForm.builder().name("name3").tags(Arrays.asList("JP", "TEST")).engine(WorkerEngine.HTTP_PULL).status(WorkerStatus.DISABLED).batchSize(100).build();
+        val createForm1 = WorkerForm.builder()
+                .name("name1")
+                .tags(Arrays.asList("JP", "TEST"))
+                .protocol(WorkerProtocol.HTTP)
+                .managed(true)
+                .status(WorkerStatus.DISABLED)
+                .batchSize(100)
+                .build();
+        val createForm2 = WorkerForm.builder()
+                .name("name2")
+                .tags(Arrays.asList("JP", "TEST"))
+                .protocol(WorkerProtocol.HTTP)
+                .managed(true)
+                .status(WorkerStatus.DISABLED)
+                .batchSize(100)
+                .build();
+        val createForm3 = WorkerForm.builder()
+                .name("name3")
+                .tags(Arrays.asList("JP", "TEST"))
+                .protocol(WorkerProtocol.HTTP)
+                .managed(true)
+                .status(WorkerStatus.DISABLED)
+                .batchSize(100)
+                .build();
 
         this.workerService.addWorker(createForm1);
         this.workerService.addWorker(createForm2);
@@ -87,9 +125,30 @@ public class WorkerServiceTest {
 
     @Test
     void testGetUniqueTags() {
-        val createForm1 = WorkerForm.builder().name("name1").tags(Arrays.asList("JP", "TEST")).engine(WorkerEngine.HTTP_PULL).status(WorkerStatus.DISABLED).batchSize(100).build();
-        val createForm2 = WorkerForm.builder().name("name2").tags(Arrays.asList("JP", "TEST")).engine(WorkerEngine.HTTP_PULL).status(WorkerStatus.DISABLED).batchSize(100).build();
-        val createForm3 = WorkerForm.builder().name("name3").tags(Arrays.asList("US", "PROD")).engine(WorkerEngine.HTTP_PULL).status(WorkerStatus.DISABLED).batchSize(100).build();
+        val createForm1 = WorkerForm.builder()
+                .name("name1")
+                .tags(Arrays.asList("JP", "TEST"))
+                .protocol(WorkerProtocol.HTTP)
+                .managed(true)
+                .status(WorkerStatus.DISABLED)
+                .batchSize(100)
+                .build();
+        val createForm2 = WorkerForm.builder()
+                .name("name2")
+                .tags(Arrays.asList("JP", "TEST"))
+                .protocol(WorkerProtocol.HTTP)
+                .managed(true)
+                .status(WorkerStatus.DISABLED)
+                .batchSize(100)
+                .build();
+        val createForm3 = WorkerForm.builder()
+                .name("name3")
+                .tags(Arrays.asList("US", "PROD"))
+                .protocol(WorkerProtocol.HTTP)
+                .managed(true)
+                .status(WorkerStatus.DISABLED)
+                .batchSize(100)
+                .build();
 
         this.workerService.addWorker(createForm1);
         this.workerService.addWorker(createForm2);
