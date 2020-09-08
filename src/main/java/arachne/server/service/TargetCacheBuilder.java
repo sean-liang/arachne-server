@@ -46,7 +46,7 @@ public class TargetCacheBuilder {
     }
 
     public void initializePipes(final Target target) {
-        target.getPipes().forEach(pipe -> pipe.setTarget(target));
+        target.withEachPipe(pipe -> pipe.setTarget(target));
     }
 
 }

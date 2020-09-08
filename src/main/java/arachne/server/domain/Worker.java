@@ -15,6 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
+/**
+ * Worker usually represents a crawler worker that fetch contents.
+ */
 @Document(collection = "sys_workers")
 @Data
 @Builder
@@ -31,14 +34,33 @@ public class Worker implements DomainEntity {
     @Indexed(unique = true)
     private String name;
 
+    /**
+     * Tags for easy grouping and use in frontend.
+     */
     @Indexed
     private List<String> tags;
 
+    /**
+     * Worker use id and token to indentify and authenticate itself.
+     */
     @Indexed(unique = true)
     private String token;
 
-    private WorkerEngine engine;
+    /**
+     * Communication protocol, eg. Http, WebSocket.
+     */
+    private WorkerProtocol protocol;
 
+    /**
+     * Managed workers will get jobs from server, and those jobs are tracked.
+     * Unmanaged workers only push results back to server.
+     */
+    @Indexed
+    private boolean managed;
+
+    /**
+     * For a managed worker, batch size is the maximum number of jobs it can get from server in single request. For unmanaged workers, it will be ignored.
+     */
     private int batchSize;
 
     @Indexed

@@ -5,18 +5,14 @@ import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventLis
 import org.springframework.data.mongodb.core.mapping.event.AfterConvertEvent;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 
+import java.util.Optional;
+
 public class TargetEventListener extends AbstractMongoEventListener<Target> {
 
     private static void injectTargetInstance(final Target target) {
-        if (null != target.getProvider()) {
-            target.getProvider().setTarget(target);
-        }
-        if (null != target.getStore()) {
-            target.getStore().setTarget(target);
-        }
-        if (null != target.getPipes()) {
-            target.getPipes().forEach(pipe -> pipe.setTarget(target));
-        }
+        target.withProvider(p -> p.setTarget(target));
+        target.withStore(s -> s.setTarget(target));
+        target.withEachPipe(p -> p.setTarget(target));
     }
 
     @Override

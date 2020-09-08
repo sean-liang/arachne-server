@@ -5,6 +5,7 @@ import arachne.server.controller.worker.message.WorkerProtocol;
 import arachne.server.domain.Worker;
 import arachne.server.exceptions.BadRequestException;
 import arachne.server.exceptions.ResourceNotFoundException;
+import arachne.server.job.FeedbackDispatcher;
 import arachne.server.job.JobScheduler;
 import arachne.server.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,16 @@ public class WebsocketProtoHandler extends BinaryWebSocketHandler {
     @Autowired
     private JobScheduler scheduler;
 
+    @Autowired
+    private FeedbackDispatcher dispatcher;
+
     @Override
     protected void handleBinaryMessage(final WebSocketSession session, final BinaryMessage message) throws Exception {
         final Worker worker = this.workerService.getById(SecurityContextHolder.getContext().getAuthentication().getName())
                 .orElseThrow(ResourceNotFoundException::new);
         try {
             final WorkerProtocol.JobFeedbackMessageList msg = WorkerProtocol.JobFeedbackMessageList.parseFrom(message.getPayload().array());
-            this.scheduler.feed(worker, JobMessageConverter.toJobFeedbackMessageList(worker.getId(),
+            this.dispatcher.feed(worker, JobMessageConverter.toJobFeedbackMessageList(worker.getId(),
                     session.getRemoteAddress().getAddress().toString(),
                     msg));
         } catch (IOException e) {
